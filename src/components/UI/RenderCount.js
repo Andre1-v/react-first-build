@@ -1,12 +1,9 @@
-import { useRef } from "react";
-import Badge from "./Badge.js";
+import { useRef } from 'react';
+import Badge from './Badge.js';
 
 const renderCountStyling = { position: "absolute" };
 
-export default function RenderCount({
-  background = "Cyan",
-  fontColor = "White",
-}) {
+export default function RenderCount({background="Cyan",fontColor="White"}) {
   // Properies -----------------------------------
   // Hooks ---------------------------------------
   const renderCount = useRef(0);

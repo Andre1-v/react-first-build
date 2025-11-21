@@ -1,4 +1,4 @@
-import "./Badge.scss";
+import './Badge.scss';
 
 export default function Badge({ children, background, fontColor }) {
   // Properies -----------------------------------
