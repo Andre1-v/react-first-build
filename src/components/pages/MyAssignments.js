@@ -1,34 +1,31 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { useAuth } from "../auth/useAuth.js";
 import API from "../api/API.js";
 import { ActionTray, ActionAdd } from "../UI/Actions.js";
 import AssignmentPanels from "../entitites/assignment/AssignmentPanels.js";
 import ToolTipDecorator from "../UI/ToolTipDecorator.js";
 import AssignmentForm from "../entitites/assignment/AssignmentForm.js";
+import useLoad from "../api/useLoad.js";
+import "./Pages.scss";
 
 export default function MyAssignmets() {
   // Initialisation ------------------------------
-  const loggedinUserID = 15;
-  //const endpoint = `/assignments/user/${loggedinUserID}`;
-  const endpoint = `/assignments`;
+  const { loggedinUser } = useAuth();
+
+  const getAssignmentEndpoint = loggedinUser
+    ? `/assignments/users/${loggedinUser.UserID}`
+    : null;
+  const postAssignmentEndpoint = `/assignments`;
 
   // State ---------------------------------------
-  const [assignments, setAssignments] = useState(null);
-  const [loadingMessage, setLoadingMessage] = useState("Loading records ...");
+  const [assignments, , loadingMessage, loadAssignment] = useLoad(
+    getAssignmentEndpoint
+  );
 
   const [showNewAssignmentForm, setShowNewAssignmentForm] = useState(false);
 
   // Context -------------------------------------
   // Methods -------------------------------------
-  const getAssignment = async () => {
-    const response = await API.get("/assignments");
-    response.isSuccess
-      ? setAssignments(response.result)
-      : setLoadingMessage(response.message);
-  };
-
-  useEffect(() => {
-    getAssignment();
-  }, []);
 
   const handleAdd = () => {
     setShowNewAssignmentForm(true);
@@ -38,14 +35,17 @@ export default function MyAssignmets() {
   };
 
   const handleSubmit = async (assignment) => {
-    const response = await API.post(endpoint, assignment);
-    return response.isSuccess ? getAssignment() || true : false;
+    const response = await API.post(postAssignmentEndpoint, assignment);
+    return response.isSuccess
+      ? loadAssignment(postAssignmentEndpoint) || true
+      : false;
   };
 
   // View ----------------------------------------
   return (
     <section>
       <h1>My Assignments</h1>
+
       {!assignments ? (
         <p>{loadingMessage}</p>
       ) : assignments.length === 0 ? (
