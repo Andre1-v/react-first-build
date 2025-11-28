@@ -29,6 +29,11 @@ function Navbar() {
         </NavLink>
       </div>
       <div className="navItem">
+        <NavLink to="/mytickets" className={getLinkStyle} exact>
+          MyTickets
+        </NavLink>
+      </div>
+      <div className="navItem">
         <NavLink to="/contact" className={getLinkStyle}>
           Contact us
         </NavLink>
