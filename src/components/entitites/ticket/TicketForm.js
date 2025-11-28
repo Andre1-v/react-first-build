@@ -5,7 +5,7 @@ const emptyTicket = {
   TicketTitle: "",
   TicketDescription: "",
   TicketOfficeLocationID: "",
-  RequestedByUserID: "",
+  TicketRequestedByUserID: "",
 };
 
 export default function TicketForm({
@@ -19,18 +19,18 @@ export default function TicketForm({
       TicketTitle: (title) => title.length >= 3,
       TicketDescription: (desc) => desc.length >= 5,
       TicketOfficeLocationID: (id) => !isNaN(id) && id > 0,
-      RequestedByUserID: (id) => !isNaN(id) && id > 0,
+      TicketRequestedByUserID: (id) => !isNaN(id) && id > 0,
     },
 
     errorMessage: {
       TicketTitle: "Title must be at least 3 characters",
       TicketDescription: "Description must be at least 5 characters",
       TicketOfficeLocationID: "Invalid office selected",
-      RequestedByUserID: "Invalid user",
+      TicketRequestedByUserID: "Invalid user",
     },
   };
 
-  const conformance = ["TicketOfficeLocationID", "RequestedByUserID"];
+  const conformance = ["TicketOfficeLocationID", "TicketRequestedByUserID"];
 
   // State ---------------------------------------
   const [ticket, errors, handleChange, handleSubmit] = Form.useForm(
@@ -108,9 +108,9 @@ export default function TicketForm({
       {/* REQUESTED BY */}
       <Form.Item
         label="Requested By"
-        htmlFor="RequestedByUserID"
+        htmlFor="TicketRequestedByUserID"
         advice="Select the user creating the ticket"
-        error={errors.RequestedByUserID}
+        error={errors.TicketRequestedByUserID}
       >
         {!users ? (
           <p>{loadingUsers}</p>
@@ -118,8 +118,8 @@ export default function TicketForm({
           <p>No users found</p>
         ) : (
           <select
-            name="RequestedByUserID"
-            value={ticket.RequestedByUserID}
+            name="TicketRequestedByUserID"
+            value={ticket.TicketRequestedByUserID}
             onChange={handleChange}
           >
             <option value="0" disabled>

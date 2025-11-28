@@ -2,11 +2,11 @@ import { useState } from "react";
 import { useAuth } from "../auth/useAuth.js";
 import API from "../api/API.js";
 import { ActionTray, ActionAdd } from "../UI/Actions.js";
-import TicketPanels from "../entities/ticket/TicketPanels.js";
 import ToolTipDecorator from "../UI/ToolTipDecorator.js";
-import TicketForm from "../entities/ticket/TicketForm.js";
 import useLoad from "../api/useLoad.js";
 import "./Pages.scss";
+import TicketPanels from "../entitites/ticket/TicketPanels.js";
+import TicketForm from "../entitites/ticket/TicketForm.js";
 
 export default function MyTickets() {
   // Initialisation ------------------------------

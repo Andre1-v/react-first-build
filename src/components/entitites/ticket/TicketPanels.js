@@ -6,8 +6,8 @@ export default function TicketPanels({ tickets }) {
     { key: "TicketTitle", label: "Title" },
     { key: "TicketDescription", label: "Description" },
     { key: "TicketOfficeName", label: "Office" },
-    { key: "RequestedByUserName", label: "Requested By" },
-    { key: "CreatedAt", label: "Created At" },
+    { key: "TickeetRequestedByUserName", label: "Requested By" },
+    { key: "TicketCreatedAt", label: "Created At" },
   ];
 
   return (
