@@ -23,14 +23,16 @@ export default function MyTickets() {
   const [showNewTicketForm, setShowNewTicketForm] = useState(false);
 
   // Methods -------------------------------------
-  const handleAdd = () => setShowNewTicketForm(true);
-  const handleDismissAdd = () => setShowNewTicketForm(false);
+  const toggleAddForm = () => {
+    setShowNewTicketForm(true);
+  };
+  const cancelAddForm = () => {
+    setShowNewTicketForm(false);
+  };
 
-  const handleSubmit = async (ticket) => {
+  const handleAddSubmit = async (ticket) => {
     const response = await API.post(postTicketsEndpoint, ticket);
-    return response.isSuccess
-      ? loadTickets(postTicketsEndpoint) || true
-      : false;
+    return loadTickets() && response.isSuccess;
   };
 
   // View ----------------------------------------
@@ -43,22 +45,22 @@ export default function MyTickets() {
       ) : tickets.length === 0 ? (
         <p>No Tickets found</p>
       ) : (
-        <TicketPanels tickets={tickets} />
+        <TicketPanels tickets={tickets} reloadTickets={loadTickets} />
       )}
 
       <p>&nbsp;</p>
       <ActionTray>
-        <ToolTipDecorator message="Create a new ticket">
+        <ToolTipDecorator message="Add a new ticket">
           <ActionAdd
             showText
-            onClick={handleAdd}
-            buttonText="Create new ticket"
+            onClick={toggleAddForm}
+            buttonText="Add a new ticket"
           />
         </ToolTipDecorator>
       </ActionTray>
 
       {showNewTicketForm && (
-        <TicketForm onDismiss={handleDismissAdd} onSubmit={handleSubmit} />
+        <TicketForm onCancel={cancelAddForm} onSubmit={handleAddSubmit} />
       )}
     </section>
   );

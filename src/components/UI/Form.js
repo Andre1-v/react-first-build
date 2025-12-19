@@ -79,7 +79,7 @@ function useForm(
 
   const isValidRecord = (record) => {
     let isRecordValid = true;
-    Object.keys(record).forEach((key) => {
+    Object.keys(isValid).forEach((key) => {
       if (isValid[key](record[key])) {
         errors[key] = null;
       } else {

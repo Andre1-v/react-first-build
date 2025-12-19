@@ -11,34 +11,31 @@ import "./Pages.scss";
 export default function MyAssignmets() {
   // Initialisation ------------------------------
   const { loggedinUser } = useAuth();
-
   const getAssignmentEndpoint = loggedinUser
     ? `/assignments/users/${loggedinUser.UserID}`
-    : null;
+    : "/assignments";
   const postAssignmentEndpoint = `/assignments`;
 
   // State ---------------------------------------
-  const [assignments, , loadingMessage, loadAssignment] = useLoad(
+  const [assignments, , loadingMessage, loadAssignments] = useLoad(
     getAssignmentEndpoint
   );
 
-  const [showNewAssignmentForm, setShowNewAssignmentForm] = useState(false);
+  const [showAddAssignmentForm, setShowAddAssignmentForm] = useState(false);
 
   // Context -------------------------------------
   // Methods -------------------------------------
 
-  const handleAdd = () => {
-    setShowNewAssignmentForm(true);
+  const toggleAddForm = () => {
+    setShowAddAssignmentForm(true);
   };
-  const handleDismissAdd = () => {
-    setShowNewAssignmentForm(false);
+  const cancelAddForm = () => {
+    setShowAddAssignmentForm(false);
   };
 
-  const handleSubmit = async (assignment) => {
+  const handleAddSubmit = async (assignment) => {
     const response = await API.post(postAssignmentEndpoint, assignment);
-    return response.isSuccess
-      ? loadAssignment(postAssignmentEndpoint) || true
-      : false;
+    return loadAssignments() && response.isSuccess;
   };
 
   // View ----------------------------------------
@@ -51,7 +48,10 @@ export default function MyAssignmets() {
       ) : assignments.length === 0 ? (
         <p>No Assignments found</p>
       ) : (
-        <AssignmentPanels assignments={assignments} />
+        <AssignmentPanels
+          assignments={assignments}
+          reloadAssignmets={loadAssignments}
+        />
       )}
 
       <p>&nbsp;</p>
@@ -59,14 +59,14 @@ export default function MyAssignmets() {
         <ToolTipDecorator message="Add a new assignment">
           <ActionAdd
             showText
-            onClick={handleAdd}
+            onClick={toggleAddForm}
             buttonText="Add a new assignment"
           />
         </ToolTipDecorator>
       </ActionTray>
 
-      {showNewAssignmentForm && (
-        <AssignmentForm onDismiss={handleDismissAdd} onSubmit={handleSubmit} />
+      {showAddAssignmentForm && (
+        <AssignmentForm onCancel={cancelAddForm} onSubmit={handleAddSubmit} />
       )}
     </section>
   );

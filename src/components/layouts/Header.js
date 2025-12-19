@@ -1,27 +1,28 @@
 import { Link } from "react-router-dom";
-
+import Icon from "../UI/Icons.js";
+import { useAuth } from "../auth/useAuth.js";
 import "./Header.css";
 
 function Header() {
-  // Properties ----------------------------------
-  // Hooks ---------------------------------------
+  // Initialisation ------------------------------
+  const { loggedinUser } = useAuth();
+  // State ---------------------------------------
   // Context -------------------------------------
   // Methods -------------------------------------
   // View ----------------------------------------
   return (
-    <header>
+    <header className="Header">
       <Link to="/">
-        <img
-          src="https://img.icons8.com/ios-filled/50/000000/conference-call.png"
-          alt="Icon showing group"
-        />
+        <Icon.Group />
       </Link>
       <Link to={"/"}>
-        <h1>React First Build</h1>
+        <h1>Office Connect</h1>
       </Link>
-      <div className="login">
-        <p>Welcome Graeme!</p>
-      </div>
+      {loggedinUser && (
+        <div className="login">
+          <p>{`Welcome ${loggedinUser.UserFirstName} (${loggedinUser.UserUserTypeName})`}</p>
+        </div>
+      )}
     </header>
   );
 }

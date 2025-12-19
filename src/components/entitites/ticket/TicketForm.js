@@ -4,6 +4,7 @@ import useLoad from "../../api/useLoad.js";
 const emptyTicket = {
   TicketTitle: "",
   TicketDescription: "",
+  TicketDueDate: "",
   TicketOfficeLocationID: "",
   TicketRequestedByUserID: "",
 };
@@ -18,13 +19,16 @@ export default function TicketForm({
     isValid: {
       TicketTitle: (title) => title.length >= 3,
       TicketDescription: (desc) => desc.length >= 5,
+      TicketDueDate: (value) => !Number.isNaN(Date.parse(value)),
       TicketOfficeLocationID: (id) => !isNaN(id) && id > 0,
       TicketRequestedByUserID: (id) => !isNaN(id) && id > 0,
+      TicketCreateAt: () => true,
     },
 
     errorMessage: {
       TicketTitle: "Title must be at least 3 characters",
       TicketDescription: "Description must be at least 5 characters",
+      TicketDueDate: "Enter a valid date",
       TicketOfficeLocationID: "Invalid office selected",
       TicketRequestedByUserID: "Invalid user",
     },
@@ -47,7 +51,6 @@ export default function TicketForm({
   // View ----------------------------------------
   return (
     <Form onSubmit={handleSubmit} onCancel={onCancel}>
-      {/* TITLE */}
       <Form.Item
         label="Ticket Title"
         htmlFor="TicketTitle"
@@ -62,7 +65,6 @@ export default function TicketForm({
         />
       </Form.Item>
 
-      {/* DESCRIPTION */}
       <Form.Item
         label="Ticket Description"
         htmlFor="TicketDescription"
@@ -76,7 +78,20 @@ export default function TicketForm({
         ></textarea>
       </Form.Item>
 
-      {/* OFFICE SELECT */}
+      <Form.Item
+        label="Due Date"
+        htmlFor="TicketDueDate"
+        advice="Enter a due date you need the request to be done"
+        error={errors.TicketDueDate}
+      >
+        <input
+          type="date"
+          name="TicketDueDate"
+          value={ticket.TicketDueDate}
+          onChange={handleChange}
+        />
+      </Form.Item>
+
       <Form.Item
         label="Office Location"
         htmlFor="TicketOfficeLocationID"
@@ -105,7 +120,6 @@ export default function TicketForm({
         )}
       </Form.Item>
 
-      {/* REQUESTED BY */}
       <Form.Item
         label="Requested By"
         htmlFor="TicketRequestedByUserID"

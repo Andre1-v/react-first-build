@@ -7,17 +7,24 @@ div#root {
   min-height: 100vh;
   display: flex;
   justify-content: center;
+
+  & > div.Layout {
+    background: WhiteSmoke;
+    width: 100%;
+    max-width: 1000px;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+
+    & > main.Layout {
+      padding: 30px;
+      width: 100%;
+    }
+  }
 }
 
-div#root div.centrepane {
-  background: WhiteSmoke;
-  width: 100%;
-  max-width: 1000px;
-  display: grid;
-  grid-template-rows: auto auto 1fr auto;
-}
-
-div#root div.centrepane > main {
-  padding: 30px;
-  width: 100%;
+div.StickyHeader {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  z-index: 1;
 }

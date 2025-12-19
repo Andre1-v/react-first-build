@@ -34,7 +34,7 @@ ActionButton.propTypes = {
 
 function ActionButton({ children, onClick, showText, buttonText }) {
   return (
-    <button className="Action" onClick={onClick}>
+    <button type="button" className="Action" onClick={onClick}>
       {children} {showText && <p>{buttonText}</p>}
     </button>
   );
