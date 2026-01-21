@@ -1,5 +1,6 @@
 import Form from "../../UI/Form.js";
 import useLoad from "../../api/useLoad.js";
+import { DateFormatter } from "../../utils/dateUtils.js";
 
 const emptyTicket = {
   TicketTitle: "",
@@ -14,6 +15,11 @@ export default function TicketForm({
   onSubmit,
   initialTicket = emptyTicket,
 }) {
+  const formattedInitial = {
+    ...initialTicket,
+    TicketDueDate: DateFormatter.forInputDateTime(initialTicket.TicketDueDate),
+  };
+
   // Validation --------------------------
   const validation = {
     isValid: {
@@ -38,11 +44,11 @@ export default function TicketForm({
 
   // State ---------------------------------------
   const [ticket, errors, handleChange, handleSubmit] = Form.useForm(
-    initialTicket,
+    formattedInitial,
     conformance,
     validation,
     onCancel,
-    onSubmit
+    onSubmit,
   );
 
   const [offices, , loadingOffices] = useLoad("/offices");

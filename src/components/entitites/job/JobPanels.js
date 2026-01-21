@@ -1,5 +1,5 @@
 import API from "../../api/API.js";
-import AssignmentForm from "../../entitites/assignment/AssignmentForm.js";
+import JobForm from "../job/JobForm.js";
 import { DateFormatter } from "../../utils/dateUtils.js";
 import { useState } from "react";
 import Modal from "../../UI/Modal.js";
@@ -12,16 +12,17 @@ import {
   createErrorModal,
 } from "../../utils/modalCreators.js";
 
-export default function AssignmentPanels({ assignments, reloadAssignments }) {
+export default function JobPanels({ jobs, reloadJobs }) {
   // Initialisation ------------------------------
-  const putAssignmentsEndpoint = "/assignments";
-  const deleteAssignmentsEndpoint = "/assignments";
+  const putJobsEndpoint = "/jobs";
+  const deleteJobsEndpoint = "/jobs";
 
-  // Fotmat assignments
-  const formattedAssignments = assignments.map((assignment) => ({
-    ...assignment,
-    AssignmentCreatedAtFormatted: DateFormatter.forDisplay(
-      assignment.AssignmentDateCreated,
+  // Format jobs
+  const formattedJobs = jobs.map((job) => ({
+    ...job,
+    JobCreatedAtFormatted: DateFormatter.forDisplay(job.JobCreatedAt),
+    JobDueDateTimeFormatted: DateFormatter.forDisplayWithTime(
+      job.JobDueDateTime,
     ),
   }));
   // State ---------------------------------------
@@ -29,11 +30,13 @@ export default function AssignmentPanels({ assignments, reloadAssignments }) {
   // Methods -------------------------------------
   // View ----------------------------------------
   const displayableAttributes = [
-    { key: "AssignmentStatus", label: "Status" },
-    { key: "AssignmentUserName", label: "Full Name" },
-    { key: "AssignmentJobTitle", label: "Job Title" },
-    { key: "AssignmentJobDescription", label: "Job Description" },
-    { key: "AssignmentCreatedAtFormatted", label: "Created At" },
+    { key: "JobTitle", label: "Job Title" },
+    { key: "JobDescription", label: "Job Description" },
+    { key: "JobDueDateTimeFormatted", label: "Due Date & Time" },
+    { key: "JobStatus", label: "Status" },
+    { key: "JobJobTypeName", label: "Job Type" },
+    { key: "JobTicketTitle", label: "Ticket Title" },
+    { key: "JobCreatedAtFormatted", label: "Created At" },
   ];
   const [showFormId, setShowFormId] = useState(0);
   const { handleModal } = Modal.useModal();
@@ -41,16 +44,14 @@ export default function AssignmentPanels({ assignments, reloadAssignments }) {
   // Modal helpers
   const dismissModal = () => handleModal({ show: false });
   const showDeleteModal = (id) =>
-    handleModal(
-      createDeleteModal(() => handleDelete(id), dismissModal, "assignment"),
-    );
+    handleModal(createDeleteModal(() => handleDelete(id), dismissModal, "job"));
   const showErrorModal = (title, message) =>
     handleModal(createErrorModal(title, message, dismissModal));
   //Form handlers
   const toggleModify = (id) => setShowFormId(showFormId === id ? 0 : id);
-  const handleSubmit = async (assignment) => {
+  const handleSubmit = async (job) => {
     try {
-      await handleModifySubmit(assignment);
+      await handleModifySubmit(job);
       setShowFormId(0);
     } catch (error) {
       showErrorModal("Update failed!", error.message || "An error occurred");
@@ -58,59 +59,49 @@ export default function AssignmentPanels({ assignments, reloadAssignments }) {
   };
   const handleCancel = () => setShowFormId(0);
   const handleDelete = async (id) => {
-    const response = await API.delete(`${deleteAssignmentsEndpoint}/${id}`);
+    const response = await API.delete(`${deleteJobsEndpoint}/${id}`);
     if (!response.isSuccess) {
       throw new Error(response.message);
     }
-    reloadAssignments();
+    reloadJobs();
   };
 
-  const handleModifySubmit = async (assignment) => {
-    const response = await API.put(
-      `${putAssignmentsEndpoint}/${assignment.AssignmentID}`,
-      assignment,
-    );
+  const handleModifySubmit = async (job) => {
+    const response = await API.put(`${putJobsEndpoint}/${job.JobID}`, job);
     if (!response.isSuccess) {
       throw new Error(response.message);
     }
-    reloadAssignments();
+    reloadJobs();
   };
 
   return (
     <Panel.Container>
-      {formattedAssignments.map((assignment) => (
-        <Panel
-          key={assignment.AssignmentID}
-          title={`${assignment.AssignmentID} ${assignment.AssignmentJobTitle}`}
-          level={3}
-        >
+      {formattedJobs.map((job) => (
+        <Panel key={job.JobID} title={`${job.JobID} ${job.JobTitle}`} level={3}>
           <Panel.Static level={4}>
-            <ObjectTable
-              object={assignment}
-              attributes={displayableAttributes}
-            />
+            <ObjectTable object={job} attributes={displayableAttributes} />
           </Panel.Static>
 
           <ActionTray>
-            <ToolTipDecorator message="Modify this assignment">
+            <ToolTipDecorator message="Modify this Job">
               <ActionModify
                 showText
-                onClick={() => toggleModify(assignment.AssignmentID)}
-                buttonText="Modify assignment"
+                onClick={() => toggleModify(job.JobID)}
+                buttonText="Modify job"
               />
             </ToolTipDecorator>
-            <ToolTipDecorator message="Delete this assignment">
+            <ToolTipDecorator message="Delete this job">
               <ActionDelete
                 showText
-                onClick={() => showDeleteModal(assignment.AssignmentID)}
-                buttonText="Delete assignment"
+                onClick={() => showDeleteModal(job.JobID)}
+                buttonText="Delete job"
               />
             </ToolTipDecorator>
           </ActionTray>
 
-          {showFormId === assignment.AssignmentID && (
-            <AssignmentForm
-              initialAssignment={assignment}
+          {showFormId === job.JobID && (
+            <JobForm
+              initialJob={job}
               onCancel={handleCancel}
               onSubmit={handleSubmit}
             />

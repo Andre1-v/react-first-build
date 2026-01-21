@@ -6,12 +6,12 @@ footer {
   height: 50px;
   display: grid;
   place-items: center;
-  border-top: 1px solid #b77de0;
-  background: #aa63da;
+  border-top: 1px solid #394cf8;
+  background: #394cf8;
 }
 
 footer a {
   font-size: 70%;
   text-decoration: none;
-  color: #6d26a0;
+  color: white;
 }

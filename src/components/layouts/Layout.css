@@ -11,7 +11,6 @@ div#root {
   & > div.Layout {
     background: WhiteSmoke;
     width: 100%;
-    max-width: 1000px;
     display: grid;
     grid-template-rows: auto 1fr auto;
 

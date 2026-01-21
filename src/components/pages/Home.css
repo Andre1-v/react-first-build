@@ -1,0 +1,29 @@
+.home-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh;
+  background-color: #f4f4f4;
+  padding: 20px;
+}
+
+.hero {
+  background-color: white;
+  padding: 40px 60px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  max-width: 800px;
+}
+
+.hero h1 {
+  color: #333;
+  margin-bottom: 15px;
+  font-size: 2.5rem;
+}
+
+.hero p {
+  color: #666;
+  font-size: 1.2rem;
+  line-height: 1.5;
+}

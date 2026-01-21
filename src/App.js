@@ -7,6 +7,7 @@ import ContactUs from "./components/pages/ContactUs.js";
 import PageNotFound from "./components/pages/404.js";
 import MyAssignmets from "./components/pages/MyAssignments.js";
 import MyTickets from "./components/pages/MyTickets.js";
+import Jobs from "./components/pages/Jobs.js";
 
 import "./App.css";
 
@@ -18,8 +19,9 @@ function App() {
           <Routes>
             <Route path="*" element={<PageNotFound />} />
             <Route path="/" element={<Home />} />
-            <Route path="/myassignments" element={<MyAssignmets />} />
             <Route path="/mytickets" element={<MyTickets />} />
+            <Route path="/jobs" element={<Jobs />} />
+            <Route path="/myassignments" element={<MyAssignmets />} />
             <Route path="/login" element={<FauxLogin />} />
             <Route path="/contact" element={<ContactUs />} />
           </Routes>

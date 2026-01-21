@@ -10,13 +10,13 @@ const emptyAssignment = {
 export default function AssignmentForm({
   onCancel,
   onSubmit,
-  initalAssignment = emptyAssignment,
+  initialAssignment = emptyAssignment,
 }) {
   // Initialisation ------------------------------
   const validation = {
     isValid: {
-      AssignmentJobID: (id) => true,
-      AssignmentUserID: (id) => true,
+      AssignmentJobID: (id) => !isNaN(id) && id > 0,
+      AssignmentUserID: (id) => !isNaN(id) && id > 0,
       AssignmentStatus: (status) =>
         ["Assigned", "In Progress", "Completed"].includes(status),
     },
@@ -33,15 +33,15 @@ export default function AssignmentForm({
   // State ---------------------------------------
 
   const [assignment, errors, handleChange, handleSubmit] = Form.useForm(
-    initalAssignment,
+    initialAssignment,
     conformance,
     validation,
     onCancel,
-    onSubmit
+    onSubmit,
   );
   const [jobs, , loadingJobsMessage] = useLoad("/jobs");
   const [tradespersons, , loadingTradespersonMessage] = useLoad(
-    "/users/tradesperson"
+    "/users/tradesperson",
   );
 
   //Handlers -----------------------------------

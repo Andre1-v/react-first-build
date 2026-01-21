@@ -1,23 +1,70 @@
-/* -------------------------------------------- */
-/* Styling //////////////////////////////////// */
-/* -------------------------------------------- */
-
-nav {
-  display: flex;
-  overflow: hidden;
-  background-color: #edafb8;
+/* Main container */
+.navbar {
+  width: 100%;
+  background-color: #ffffff;
+  overflow: auto; /* Handles the clearing of floats */
 }
 
-nav div.navItem {
-  padding: 10px;
-}
-nav div.navItem:hover {
-  background-color: #f4cdd3;
-}
-nav div.navItem a {
-  color: White;
+/* Navbar links (NavLink renders as an <a> tag) */
+.navbar a {
+  float: left;
+  text-align: center;
+  padding: 12px;
+  color: rgb(21, 13, 97);
   text-decoration: none;
+  font-size: 17px;
+
+  /* Flexbox keeps icon and text aligned */
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Space between icon and text */
 }
-nav div.navItem a.navSelected {
-  color: Black;
+
+/* Force all Icons to be the same size */
+.navbar a svg,
+.navbar a img,
+.navbar a i {
+  width: 20px; /* Fixed width */
+  height: 20px; /* Fixed height */
+  min-width: 20px; /* Prevents squishing on small screens */
+  object-fit: contain; /* Keeps icon aspect ratio correct */
+}
+/* Navbar links on mouse-over */
+.navbar a:hover {
+  background-color: #8886ff;
+}
+
+/* Current/active navbar link */
+.active {
+  background-color: #5c6cfa;
+}
+
+/* User Login Info - Floated Right */
+.navbar-right {
+  float: right;
+  padding: 12px;
+  color: rgb(21, 13, 97);
+
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  height: 100%; /* Ensures vertical alignment matches links */
+}
+
+/* Responsiveness */
+@media screen and (max-width: 850px) {
+  /* Stack links vertically on smaller screens */
+  .navbar a {
+    float: none;
+    display: block;
+    text-align: left;
+  }
+
+  /* Stack the user info too */
+  .navbar-right {
+    float: none;
+    display: block;
+    text-align: left;
+    background-color: #333;
+  }
 }

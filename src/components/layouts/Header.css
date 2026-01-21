@@ -3,9 +3,9 @@
 /* -------------------------------------------- */
 
 header {
-  height: 70px;
+  height: 40px;
   color: White;
-  background: #3c1557;
+  background: #4c5eff;
   display: flex;
 
   & > a {
@@ -15,18 +15,18 @@ header {
 
     img {
       filter: invert(1);
-      margin-left: 10px;
+      margin-left: 20px;
     }
 
     & > h1 {
       color: White;
-      margin-left: 10px;
+      position: center;
       font-size: 200%;
     }
 
     header a:hover,
     header a:active {
-      color: #aa63da;
+      color: #394cf8;
     }
   }
   header div.login {

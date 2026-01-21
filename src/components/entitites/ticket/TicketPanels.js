@@ -1,18 +1,16 @@
+import API from "../../api/API.js";
+import TicketForm from "../../entitites/ticket/TicketForm.js";
+import { DateFormatter } from "../../utils/dateUtils.js";
 import { useState } from "react";
 import Modal from "../../UI/Modal.js";
-import API from "../../api/API.js";
 import Panel from "../../UI/Panel.js";
 import ObjectTable from "../../UI/ObjectTable.js";
-import {
-  ActionTray,
-  ActionModify,
-  ActionDelete,
-  ActionYes,
-  ActionNo,
-  ActionClose,
-} from "../../UI/Actions.js";
+import { ActionTray, ActionModify, ActionDelete } from "../../UI/Actions.js";
 import ToolTipDecorator from "../../UI/ToolTipDecorator.js";
-import TicketForm from "../../entitites/ticket/TicketForm.js";
+import {
+  createDeleteModal,
+  createErrorModal,
+} from "../../utils/modalCreators.js";
 
 export default function TicketPanels({ tickets, reloadTickets }) {
   //Initialisation ------------------------
@@ -20,78 +18,72 @@ export default function TicketPanels({ tickets, reloadTickets }) {
   const putTicketsEndpoint = "/tickets";
   const deleteTicketsEndpoint = "/tickets";
 
-  //State --------------------------
-
-  const [showFormId, setShowFormId] = useState(0);
-
-  //Context -------------------------
-  const { handleModal } = Modal.useModal();
-  //Methods ----------------------------------
-  const toggleModify = (id) => setShowFormId(showFormId === id ? 0 : id);
-  const handleDelete = async (id) => {
-    dismissModal();
-    const response = await API.delete(`${deleteTicketsEndpoint}/${id}`);
-    response.isSuccess
-      ? reloadTickets()
-      : showErrorModal("Delete failed!", response.message);
-  };
-  const handleSubmit = async (ticket) => {
-    const response = await API.put(
-      `${putTicketsEndpoint}/${ticket.TicketID}`,
-      ticket
-    );
-    if (response.isSuccess) {
-      setShowFormId(0);
-      reloadTickets();
-    }
-  };
-
-  const handleCancel = () => setShowFormId(0);
-
-  const showDeleteModal = (id) =>
-    handleModal({
-      show: true,
-      title: "Alert!",
-      content: <p> Are you sure you want to delete this ticket?</p>,
-      actions: [
-        <ToolTipDecorator key="ActionYes" message="Click to confirm deletion">
-          <ActionYes showText onClick={() => handleDelete(id)} />
-        </ToolTipDecorator>,
-        <ToolTipDecorator key="ActionNo" message="Click to abandon deletion">
-          <ActionNo showText onClick={dismissModal} />
-        </ToolTipDecorator>,
-      ],
-    });
-
-  const showErrorModal = (title, message) =>
-    handleModal({
-      show: true,
-      title: title,
-      content: <p>{message}</p>,
-      actions: [
-        <ToolTipDecorator
-          key="ActionClose"
-          message="Click to dismiss error message"
-        >
-          <ActionClose showText onClick={dismissModal} />
-        </ToolTipDecorator>,
-      ],
-    });
-
-  const dismissModal = () => handleModal({ show: false });
+  // Format tickets
+  const formattedTickets = tickets.map((ticket) => ({
+    ...ticket,
+    TicketDueDateTimeFormatted: DateFormatter.forDisplayWithTime(
+      ticket.TicketDueDate,
+    ),
+    TicketCreatedAtFormatted: DateFormatter.forDisplayWithTime(
+      ticket.TicketCreatedAt,
+    ),
+  }));
 
   const displayableAttributes = [
     { key: "TicketTitle", label: "Title" },
     { key: "TicketDescription", label: "Description" },
-    { key: "TicketDueDate", label: "Due Date" },
+    { key: "TicketDueDateTimeFormatted", label: "Due Date" },
     { key: "TicketOfficeName", label: "Office" },
     { key: "TicketRequestedByUserName", label: "Requested By" },
-    { key: "TicketCreatedAt", label: "Created At" },
+    { key: "TicketCreatedAtFormatted", label: "Created At" },
   ];
+
+  // State for form display
+  const [showFormId, setShowFormId] = useState(0);
+  const { handleModal } = Modal.useModal();
+
+  // Modal helpers
+  const dismissModal = () => handleModal({ show: false });
+  const showDeleteModal = (id) =>
+    handleModal(
+      createDeleteModal(() => handleDelete(id), dismissModal, "ticket"),
+    );
+  const showErrorModal = (title, message) =>
+    handleModal(createErrorModal(title, message, dismissModal));
+
+  // Form handlers
+  const toggleModify = (id) => setShowFormId(showFormId === id ? 0 : id);
+  const handleSubmit = async (ticket) => {
+    try {
+      await handleModifySubmit(ticket);
+      setShowFormId(0);
+    } catch (error) {
+      showErrorModal("Update failed!", error.message || "An error occurred");
+    }
+  };
+  const handleCancel = () => setShowFormId(0);
+  const handleDelete = async (id) => {
+    const response = await API.delete(`${deleteTicketsEndpoint}/${id}`);
+    if (!response.isSuccess) {
+      throw new Error(response.message);
+    }
+    reloadTickets();
+  };
+
+  const handleModifySubmit = async (ticket) => {
+    const response = await API.put(
+      `${putTicketsEndpoint}/${ticket.TicketID}`,
+      ticket,
+    );
+    if (!response.isSuccess) {
+      throw new Error(response.message);
+    }
+    reloadTickets();
+  };
 
   return (
     <Panel.Container>
-      {tickets.map((ticket) => (
+      {formattedTickets.map((ticket) => (
         <Panel
           key={ticket.TicketID}
           title={`${ticket.TicketID} - ${ticket.TicketTitle}`}
@@ -102,14 +94,14 @@ export default function TicketPanels({ tickets, reloadTickets }) {
           </Panel.Static>
 
           <ActionTray>
-            <ToolTipDecorator message="Modify this request">
+            <ToolTipDecorator message="Modify this ticket">
               <ActionModify
                 showText
                 onClick={() => toggleModify(ticket.TicketID)}
                 buttonText="Modify ticket"
               />
             </ToolTipDecorator>
-            <ToolTipDecorator message="Delete this request">
+            <ToolTipDecorator message="Delete this ticket">
               <ActionDelete
                 showText
                 onClick={() => showDeleteModal(ticket.TicketID)}

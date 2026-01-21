@@ -50,7 +50,7 @@ export default function MyAssignmets() {
       ) : (
         <AssignmentPanels
           assignments={assignments}
-          reloadAssignmets={loadAssignments}
+          reloadAssignments={loadAssignments}
         />
       )}
 
